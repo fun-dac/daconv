@@ -31,17 +31,17 @@ class Zconvd:
 
     def disconnect(self):
         self.conn.disconnect()
-    
+
     def convert(self):
         target = self.col_que.find_one({"status": "waiting"})
-        
+
         if target is None:
             return
         else:
             target["status"] = "processing"
             targetID = str(target["_id"])
             self.col_que.save(target)
-        
+
         inputPath = target["path"]
         inputBase = os.path.basename(inputPath)
         inputFilename = inputBase.split(".")[0]
@@ -95,7 +95,7 @@ class Zconvd:
 
         #変換成功したらキューから削除
         self.col_que.remove(target)
-        
+
         finTime = str(datetime.datetime.now())
         #imagesに書き込み
         imgs = {"groupID": target["groupID"],
@@ -104,6 +104,8 @@ class Zconvd:
                 "zoomifyPath": outputPath,
                 "folderName": target["folderName"],
                 "flatName": target["flatName"],
+                "branchNum": target["branchNum"],
+                "originalFileSet": target["originalFileSet"],
                 "relName": target["relName"],
                 }
         self.col_img.save(imgs)
