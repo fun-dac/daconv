@@ -23,17 +23,17 @@ class Zconvd:
 
     def disconnect(self):
         self.conn.disconnect()
-    
+
     def convert(self):
         target = self.col_que.find_one({"status": "waiting"})
-        
+
         if target is None:
             return
         else:
             target["status"] = "processing"
             targetID = str(target["_id"])
             self.col_que.save(target)
-        
+
         inputPath = target["path"]
         inputBase = os.path.basename(inputPath)
         inputFilename = inputBase.split(".")[0]
@@ -43,7 +43,7 @@ class Zconvd:
         if os.path.exists(outputPath):
             print ("OutputFile already exsits")
             self.col_que.remove(target)
-        
+
             finTime = str(datetime.datetime.now())
             imgs = {"groupID": target["groupID"],
                     "created_at": finTime,
@@ -51,6 +51,8 @@ class Zconvd:
                     "zoomifyPath": outputPath,
                     "folderName": target["folderName"],
                     "flatName": target["flatName"],
+                    "branchNum": target["branchNum"],
+                    "originalFileSet": target["originalFileSet"],
                     "relName": target["relName"],
                     }
             self.col_img.save(imgs)
