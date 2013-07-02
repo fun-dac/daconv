@@ -51,8 +51,6 @@ class Zconvd:
                     "zoomifyPath": outputPath,
                     "folderName": target["folderName"],
                     "flatName": target["flatName"],
-                    "branchNum": target["branchNum"],
-                    "originalFileSet": target["originalFileSet"],
                     "relName": target["relName"],
                     }
             self.col_img.save(imgs)
