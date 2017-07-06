@@ -2,6 +2,7 @@
 import zoomify_im
 import pymongo
 import datetime
+import os
 import os.path
 import uuid
 import shutil
@@ -26,8 +27,10 @@ class Zconvd:
 
     def connect(self):
         self.conn = pymongo.Connection()
-        self.col_que = self.conn[self.dbName][self.colQue]
-        self.col_img = self.conn[self.dbName][self.colImg]
+	db = self.conn[self.dbName]
+	db.authenticate(os.environ["DB_USER"], os.environ["DB_PASS"])
+        self.col_que = db[self.colQue]
+        self.col_img = db[self.colImg]
 
     def disconnect(self):
         self.conn.disconnect()
