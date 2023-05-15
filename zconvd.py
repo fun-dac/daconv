@@ -10,6 +10,7 @@ import sys
 import time
 import logging
 import logging.handlers
+from optparse import OptionParser
 
 class Zconvd:
     def __init__(self, dbName, colQue, colImg):
@@ -59,7 +60,7 @@ class Zconvd:
 #            raise Exception("InputFile not exists")
             print ("InputFile not exists")
             return
-        elif os.path.exists(outputPath):
+        elif not options.overwrite and os.path.exists(outputPath):
             target["status"] = "failed"
             self.col_que.save(target)
             self.log.error("["+str(datetime.datetime.now())+"]"+
@@ -68,6 +69,10 @@ class Zconvd:
 #            raise Exception("OutputFile already exists")
             print ("OutputFile already exsits")
             return
+
+        if options.overwrite and os.path.exists(outputPath):
+            # OutputPathの中身を全てRemoveする．
+            shutil.rmtree(outputPath)
 
         #変換中に生成される一時ファイルが一意でないので
         #一度一意な作業ディレクトリを作ってその中で変換
@@ -116,6 +121,15 @@ class Zconvd:
                 " path:"+ target["path"]+")")
 
 #---main---
+# オプションのパーサーを作成
+parser = OptionParser()
+
+# コマンドライン引数の設定
+parser.add_option("--overwrite", action="store_true", dest="overwrite", default=False, help="既存のファイルを上書きするかどうか")
+
+# コマンドライン引数を解析
+(options, args) = parser.parse_args()
+
 argvs = sys.argv
 if (len(argvs) != 2):
     print 'Usage: # python %s db-name' % argvs[0]
