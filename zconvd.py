@@ -73,6 +73,7 @@ class Zconvd:
         if options.overwrite and os.path.exists(outputPath):
             # OutputPathの中身を全てRemoveする．
             shutil.rmtree(outputPath)
+            print ("OutputFile already exsits, Delete this file and regenerate Zoomify image.")
 
         #変換中に生成される一時ファイルが一意でないので
         #一度一意な作業ディレクトリを作ってその中で変換
